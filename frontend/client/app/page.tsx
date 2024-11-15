@@ -6,7 +6,7 @@ const [message,setMessage]=useState("Loading")
 
 
 useEffect(()=>{
-  fetch("http://localhost:3000").then(
+  fetch("http://localhost:8080").then(
     response=>response.json()
   ).then(
     data=>{
