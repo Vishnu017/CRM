@@ -1,24 +1,14 @@
-"use client"
-import React ,{useEffect,useState}from 'react'
+import React from 'react';
+import CustomerTable from './customerTable';
+import OrderTable from './orderTable';
 
-function page() {
-const [message,setMessage]=useState("Loading")
-
-
-useEffect(()=>{
-  fetch("http://localhost:8080").then(
-    response=>response.json()
-  ).then(
-    data=>{
-      console.log(data)
-      setMessage(data.message)
-    }
-  )
-},[])
-
+const App = () => {
   return (
-    <div>{message}</div>
-  )
-}
+    <div className="container mx-auto p-6">
+      <CustomerTable />
+      <OrderTable />
+    </div>
+  );
+};
 
-export default page
+export default App;
