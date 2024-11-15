@@ -18,7 +18,7 @@ app.get("/:id", async (req,res) =>{
 
 
 //post req
-app.post("/",async(req,res)=>{
+app.post("/add",async(req,res)=>{
     const {name,email,phone,address}= req.body
     const newCust=await createNew(name,email,phone,address)
     res.status(201).send(newCust)
