@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import {getOrder} from '@/app/backOrder'
 import axios from 'axios';
 
 interface Order {
@@ -36,7 +37,7 @@ const OrderTable = () => {
   const fetchAllOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8080/order');
+      const response = await getOrder();
       setOrders(response.data);
     } catch (err) {
       setError('Failed to fetch orders');
@@ -47,7 +48,7 @@ const OrderTable = () => {
 
   const handleAddOrder = async () => {
     try {
-      await axios.post('http://localhost:8080/order/add', newOrder);
+      await axios.post('http://localhost:8080/orders/add', newOrder);
       setShowAddForm(false);
       setNewOrder({ customer_id: '', product_name: '', quantity: '', price: '', status: '' });
       fetchAllOrders();
@@ -62,7 +63,7 @@ const OrderTable = () => {
     setLoading(true);
     setIsSearching(true);
     try {
-      const response = await axios.get(`http://localhost:8080/order/${searchId}`);
+      const response = await axios.get(`http://localhost:8080/orders/${searchId}`);
       setOrders([response.data]); // Display only the searched order
     } catch (err) {
       setError('Order not found');
@@ -156,7 +157,7 @@ const OrderTable = () => {
           >
             &lt;
           </button>
-          {[...Array(Math.ceil(orders.length / itemsPerPage))].map((_, i) => (
+          {orders.length>0 && [...Array(Math.ceil(orders.length / itemsPerPage))].map((_, i) => (
             <button
               key={i}
               onClick={() => paginate(i + 1)}

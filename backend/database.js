@@ -16,8 +16,8 @@ export async function getOut() {       //get complete table
 }
 
 export async function getOrder() {       //get complete table
-    const [rows]= await pool.query("SELECT * FROM order")
-    return rows;
+    const [x]= await pool.query("SELECT * FROM orders")
+    return x;
 }
 
 export async function get1(id) {           //get data from id
@@ -26,16 +26,16 @@ export async function get1(id) {           //get data from id
         FROM customer
         WHERE id=?
         `,[id]
-    )
+    )   
     return rows[0]
     
 }
-export async function get2(id) {           //get data from id
+export async function get2(order_id) {           //get data from id
     const [rows]= await pool.query(`
         SELECT *
-        FROM order
-        WHERE id=?
-        `,[id]
+        FROM orders
+        WHERE order_id=?
+        `,[order_id]
     )
     return rows[0]
     
@@ -51,19 +51,19 @@ export async function createNew(name,email,phone,address) {
     const id=result.insertId
     return get1(id)
 }
-export async function createNewOrder(customer_id,product_name,quantity,price,status) {
-    const result=await pool.query(`
-        INSERT INTO order(customer_id,product_name,quantity,price,status)
+export async function createNewOrder(customer_id,product_name,quantity,price,order_status) {
+    const [result]=await pool.query(`
+        INSERT INTO orders(customer_id,product_name,quantity,price,order_status)
         VALUES(?,?,?,?,?) 
-        `,[customer_id,product_name,quantity,price,status]
+        `,[customer_id,product_name,quantity,price,order_status]
     )
-    const id=result.insertId
-    return get2(id)
+    const newOrd=result.insertId
+    return get2(newOrd)
 }
 // //to insert
 // const result= await createNew('dhruv','hello@gmail.com','1234','qwe')
 // console.log(result);
 
 //to get output
-const out = await getOut()
+const out = await get2()
 console.log(out);

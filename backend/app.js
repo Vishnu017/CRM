@@ -19,7 +19,7 @@ app.get("/", async (req,res) =>{
     const cust=await getOut()
     res.json(cust)
 })
-app.get("/", async (req,res) =>{
+app.get("/orders", async (req,res) =>{
     const ord=await getOrder()
     res.json(ord)
 })
@@ -29,10 +29,10 @@ app.get("/:id", async (req,res) =>{
     const id=req.params.id
     const byId=await get1(id)
     res.send(byId)
-})
-app.get("/:id", async (req,res) =>{
-    const id=req.params.id
-    const byId1=await get2(id)
+});
+app.get("/orders/:id", async (req,res) =>{
+    const order_id=req.params.id
+    const byId1=await get2(order_id)
     res.send(byId1)
 })
 
@@ -43,9 +43,9 @@ app.post("/add",async(req,res)=>{
     const newCust=await createNew(name,email,phone,address)
     res.status(201).send(newCust)
 })
-app.post("/add",async(req,res)=>{
-    const {customer_id,product_name,quantity,price,status}= req.body
-    const newOrd=await createNewOrder(customer_id,product_name,quantity,price,status)
+app.post("/orders/add",async(req,res)=>{
+    const {customer_id,product_name,quantity,price,order_status}= req.body
+    const newOrd=await createNewOrder(customer_id,product_name,quantity,price,order_status)
     res.status(201).send(newOrd)
 })
 
