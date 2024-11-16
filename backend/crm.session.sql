@@ -30,3 +30,6 @@ INSERT INTO orders (customer_id, product_name, quantity, price,order_status)
 VALUES ('2', 'table', '12', '20', 'Pending');
 SELECT* from orders;
 drop TABLE`order`;
+
+DESCRIBE orders
+ALTER TABLE orders  Modify column order_status VARCHAR(20)

@@ -5,12 +5,12 @@ import {getOrder} from '@/app/backOrder'
 import axios from 'axios';
 
 interface Order {
-  id: number;
+  order_id: number;
   customer_id: number;
   product_name: string;
   quantity: number;
   price: number;
-  status: string;
+  order_status: string;
 }
 
 const OrderTable = () => {
@@ -25,7 +25,7 @@ const OrderTable = () => {
     product_name: '',
     quantity: '',
     price: '',
-    status: ''
+    order_status: ''
   });
   const [searchId, setSearchId] = useState<string>('');
   const [isSearching, setIsSearching] = useState(false);
@@ -37,8 +37,8 @@ const OrderTable = () => {
   const fetchAllOrders = async () => {
     setLoading(true);
     try {
-      const response = await getOrder();
-      setOrders(response.data);
+      const data = await getOrder();
+      setOrders(data);
     } catch (err) {
       setError('Failed to fetch orders');
     } finally {
@@ -50,7 +50,7 @@ const OrderTable = () => {
     try {
       await axios.post('http://localhost:8080/orders/add', newOrder);
       setShowAddForm(false);
-      setNewOrder({ customer_id: '', product_name: '', quantity: '', price: '', status: '' });
+      setNewOrder({ customer_id: '', product_name: '', quantity: '', price: '', order_status: '' });
       fetchAllOrders();
     } catch (err) {
       console.error('Error adding order:', err);
@@ -81,8 +81,8 @@ const OrderTable = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-//   const currentOrders = orders.slice(startIndex, startIndex + itemsPerPage);
-  const currentOrders = Array.isArray(orders) ? orders.slice(startIndex, startIndex + itemsPerPage) : [];
+   const currentOrders = orders.slice(startIndex, startIndex + itemsPerPage);
+  // const currentOrders = Array.isArray(orders) ? orders.slice(startIndex, startIndex + itemsPerPage) : [];
 
 
   if (loading) return <p>Loading...</p>;
@@ -135,13 +135,13 @@ const OrderTable = () => {
         </thead>
         <tbody>
           {currentOrders.map((order) => (
-            <tr key={order.id} className="border-b">
-              <td className="px-4 py-2">{order.id}</td>
+            <tr key={order.order_id} className="border-b">
+              <td className="px-4 py-2">{order.order_id}</td>
               <td className="px-4 py-2">{order.customer_id}</td>
               <td className="px-4 py-2">{order.product_name}</td>
               <td className="px-4 py-2">{order.quantity}</td>
               <td className="px-4 py-2">${order.price}</td>
-              <td className="px-4 py-2">{order.status}</td>
+              <td className="px-4 py-2">{order.order_status}</td>
             </tr>
           ))}
         </tbody>
@@ -157,7 +157,7 @@ const OrderTable = () => {
           >
             &lt;
           </button>
-          {orders.length>0 && [...Array(Math.ceil(orders.length / itemsPerPage))].map((_, i) => (
+          {[...Array(Math.ceil(orders.length / itemsPerPage))].map((_, i) => (
             <button
               key={i}
               onClick={() => paginate(i + 1)}
@@ -213,8 +213,8 @@ const OrderTable = () => {
               <input
                 type="text"
                 placeholder="Status"
-                value={newOrder.status}
-                onChange={(e) => setNewOrder({ ...newOrder, status: e.target.value })}
+                value={newOrder.order_status}
+                onChange={(e) => setNewOrder({ ...newOrder, order_status: e.target.value })}
                 className="w-full px-4 py-2 border rounded"
               />
             </div>
