@@ -1,20 +1,19 @@
 'use client'
 import React from 'react';
-import CustomerTable from './customerTable';
-import OrderTable from './orderTable';
+import CampaignTable from './campaignTable';
+
 
 const App = () => {
   return (
     
     <div className="container mx-auto p-6">
-      <CustomerTable />
-      <OrderTable />
+      <CampaignTable />
       <div className="mt-4">
         <button
-          onClick={() => window.location.href = "http://localhost:3000/campaigns"}
+          onClick={() => window.location.href = "http://localhost:3000"}
           className="px-4 py-2 bg-green-600 text-white rounded-md"
         >
-          Go to Campaigns Page
+          Go to Home Page
         </button>
       </div>
     </div>

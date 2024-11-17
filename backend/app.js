@@ -70,7 +70,9 @@ app.use((err, req, res, next)=> {
     res.render('error', { error: err })
   }
 )
-
+// app.get('/segment', async(req,res)=>{
+//     const seg1=req.params
+// })
 
 app.get('/segment/:segmentName', async (req, res) => {
     const { segmentName } = req.params;
@@ -86,6 +88,50 @@ app.get('/segment/:segmentName', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+app.get("/campaigns/segment/:segment_id", async(req,res)=>{
+    console.log("hello")
+    const {segment_id}=req.params;
+
+    const cal=`
+        select c.customer_id,
+        cam.campaign_id
+        from
+        customer_segment c
+        inner join
+        campaignTable cam
+        on c.segment_id=cam.segment_id
+        where c.segment_id=?
+    `;
+    const [ans]=await pool.query(cal,[segment_id]);
+    console.log(ans,"ams")
+    res.json({success:true , data:ans})
+})
+
+app.post("/comm",async(req,res)=>{
+    const {segment_id,message}=req.body
+    const ans = `
+            SELECT c.customer_id, cam.campaign_id
+            FROM customer_segment c
+            INNER JOIN campaignTable cam
+            ON c.segment_id = cam.segment_id
+            WHERE c.segment_id = ?`;
+        
+        const [results] = await pool.query(ans, [segment_id]);
+        const logQuery = `
+            INSERT INTO communications_log (customer_id, campaign_id, com_status)
+            VALUES (?, ?, ?)`;
+
+        for (const { customer_id, campaign_id } of results) {
+            await pool.query(logQuery, [customer_id, campaign_id, message]);
+        }
+
+        res.json({
+            success: true,
+            message: "Messages have been successfully logged in the communication log."
+        });
+})
+
 
 app.listen(8080,() =>{
     console.log('Server is running on port 8080')

@@ -110,10 +110,23 @@ CREATE table communications_log(
     com_id int AUTO_INCREMENT PRIMARY KEY,
     customer_id int not null,
     campaign_id int not null,
-    com_status text,
+    com_status VARCHAR(255),
     FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (campaign_id) REFERENCES campaignTable(campaign_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 
 select * from communications_log
 INSERT into communications_log(customer_id,)
+
+
+create table customer_segment(
+    id int AUTO_INCREMENT PRIMARY key,
+    segment_id int not null,
+    customer_id int not null
+    
+)
+INSERT into customer_segment (segment_id,customer_id)VALUES('2','3')
+select *  from customer_segment
+drop table customer_segment
+
+

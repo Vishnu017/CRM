@@ -222,14 +222,7 @@ const CustomerTable = () => {
           </div>
         </div>
       )}
-      {/* <div className="mt-4">
-        <button
-          onClick={() => window.location.href = "http://localhost:3000/orders"}
-          className="px-4 py-2 bg-green-600 text-white rounded-md"
-        >
-          Go to Order Page
-        </button>
-      </div> */}
+      
     </div>
   );
 };
