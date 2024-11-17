@@ -8,9 +8,8 @@ interface Order {
   order_id: number;
   customer_id: number;
   product_name: string;
-  quantity: number;
-  price: number;
-  order_status: string;
+  amount: number;
+  order_date: string;
 }
 
 const OrderTable = () => {
@@ -23,9 +22,8 @@ const OrderTable = () => {
   const [newOrder, setNewOrder] = useState({
     customer_id: '',
     product_name: '',
-    quantity: '',
-    price: '',
-    order_status: ''
+    amount: '',
+    order_date: ''
   });
   const [searchId, setSearchId] = useState<string>('');
   const [isSearching, setIsSearching] = useState(false);
@@ -50,7 +48,7 @@ const OrderTable = () => {
     try {
       await axios.post('http://localhost:8080/orders/add', newOrder);
       setShowAddForm(false);
-      setNewOrder({ customer_id: '', product_name: '', quantity: '', price: '', order_status: '' });
+      setNewOrder({ customer_id: '', product_name: '', amount: '', order_date: '' });
       fetchAllOrders();
     } catch (err) {
       console.error('Error adding order:', err);
@@ -128,9 +126,8 @@ const OrderTable = () => {
             <th className="px-4 py-2 text-left">Order ID</th>
             <th className="px-4 py-2 text-left">Customer ID</th>
             <th className="px-4 py-2 text-left">Product Name</th>
-            <th className="px-4 py-2 text-left">Quantity</th>
-            <th className="px-4 py-2 text-left">Price</th>
-            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Amount</th>
+            <th className="px-4 py-2 text-left">Date</th>
           </tr>
         </thead>
         <tbody>
@@ -139,9 +136,8 @@ const OrderTable = () => {
               <td className="px-4 py-2">{order.order_id}</td>
               <td className="px-4 py-2">{order.customer_id}</td>
               <td className="px-4 py-2">{order.product_name}</td>
-              <td className="px-4 py-2">{order.quantity}</td>
-              <td className="px-4 py-2">${order.price}</td>
-              <td className="px-4 py-2">{order.order_status}</td>
+              <td className="px-4 py-2">${order.amount}</td>
+              <td className="px-4 py-2">{order.order_date}</td>
             </tr>
           ))}
         </tbody>
@@ -198,23 +194,16 @@ const OrderTable = () => {
               />
               <input
                 type="number"
-                placeholder="Quantity"
-                value={newOrder.quantity}
-                onChange={(e) => setNewOrder({ ...newOrder, quantity: e.target.value })}
-                className="w-full px-4 py-2 border rounded"
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                value={newOrder.price}
-                onChange={(e) => setNewOrder({ ...newOrder, price: e.target.value })}
+                placeholder="Amount"
+                value={newOrder.amount}
+                onChange={(e) => setNewOrder({ ...newOrder, amount: e.target.value })}
                 className="w-full px-4 py-2 border rounded"
               />
               <input
                 type="text"
-                placeholder="Status"
-                value={newOrder.order_status}
-                onChange={(e) => setNewOrder({ ...newOrder, order_status: e.target.value })}
+                placeholder="Date"
+                value={newOrder.order_date}
+                onChange={(e) => setNewOrder({ ...newOrder, order_date: e.target.value })}
                 className="w-full px-4 py-2 border rounded"
               />
             </div>

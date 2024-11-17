@@ -44,8 +44,8 @@ app.post("/add",async(req,res)=>{
     res.status(201).send(newCust)
 })
 app.post("/orders/add",async(req,res)=>{
-    const {customer_id,product_name,quantity,price,order_status}= req.body
-    const newOrd=await createNewOrder(customer_id,product_name,quantity,price,order_status)
+    const {customer_id,product_name,amount,order_date}= req.body
+    const newOrd=await createNewOrder(customer_id,product_name,amount,order_date)
     res.status(201).send(newOrd)
 })
 
@@ -59,7 +59,19 @@ app.use((err, req, res, next)=> {
     res.render('error', { error: err })
   }
 )
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(8080,() =>{
     console.log('Server is running on port 8080')
 })

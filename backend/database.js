@@ -51,11 +51,11 @@ export async function createNew(name,email,phone,address) {
     const id=result.insertId
     return get1(id)
 }
-export async function createNewOrder(customer_id,product_name,quantity,price,order_status) {
+export async function createNewOrder(customer_id,product_name,amount,order_date) {
     const [result]=await pool.query(`
-        INSERT INTO orders(customer_id,product_name,quantity,price,order_status)
-        VALUES(?,?,?,?,?) 
-        `,[customer_id,product_name,quantity,price,order_status]
+        INSERT INTO orders(customer_id,product_name,amount,order_date)
+        VALUES(?,?,?,?) 
+        `,[customer_id,product_name,amount,order_date]
     )
     const newOrd=result.insertId
     return get2(newOrd)
