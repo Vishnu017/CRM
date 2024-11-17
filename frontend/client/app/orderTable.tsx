@@ -38,6 +38,7 @@ const OrderTable = () => {
       const data = await getOrder();
       setOrders(data);
     } catch (err) {
+      console.log(err)
       setError('Failed to fetch orders');
     } finally {
       setLoading(false);
@@ -64,6 +65,7 @@ const OrderTable = () => {
       const response = await axios.get(`http://localhost:8080/orders/${searchId}`);
       setOrders([response.data]); // Display only the searched order
     } catch (err) {
+      console.log(err)
       setError('Order not found');
     } finally {
       setLoading(false);

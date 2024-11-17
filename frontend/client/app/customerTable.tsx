@@ -37,6 +37,7 @@ const CustomerTable = () => {
       const data = await getCustomers();
       setCustomers(data);
     } catch (err) {
+      console.log(err)
       setError('Failed to fetch customer data');
     } finally {
       setLoading(false);
