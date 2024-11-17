@@ -1,9 +1,11 @@
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
+import { query } from 'express'
 
 dotenv.config()
 
-const pool=mysql.createPool({
+export const pool=mysql.createPool({
+    
     host:process.env.MYSQL_HOST,
     user:process.env.MYSQL_USER,
     password:process.env.MYSQL_PASSWORD,
@@ -60,10 +62,74 @@ export async function createNewOrder(customer_id,product_name,amount,order_date)
     const newOrd=result.insertId
     return get2(newOrd)
 }
-// //to insert
-// const result= await createNew('dhruv','hello@gmail.com','1234','qwe')
-// console.log(result);
 
-//to get output
-const out = await get2()
-console.log(out);
+//conditions and segmenet creation
+
+export async function buildSegmentQuery(segmentName){
+    // Fetch conditions for the segment
+    const [conditions] = await pool.query(
+        'SELECT * FROM audience_conditions WHERE segment_name = ? ORDER BY id',
+        [segmentName]
+    );
+    if (conditions.length === 0) {
+        throw new Error('No conditions found for the specified segment.');
+    }
+
+    // Base query to calculate total spending, visits, and last visit
+    let cal = `
+        SELECT 
+            c.id AS customer_id,
+            c.name AS customer_name,
+            SUM(o.amount) AS total_spending,
+            COUNT(o.order_id) AS total_visits,
+            MAX(o.order_date) AS last_visit
+        FROM 
+            customer c
+        LEFT JOIN 
+            orders o
+        ON 
+            c.id = o.customer_id
+        GROUP BY 
+            c.id   
+    `;
+    console.log(cal,"cal")
+// conditions=id,name,json   array of objects
+//json conditions[0].conditions_json
+// total_spending>10000
+//{ key: 'total_spending', value: 10000, operator: '>' }s
+// `${obj.key} ${obj.operator} ${obj.value}`
+
+    let whereClauses = conditions.map((cond) => {
+        
+    //    console.log(`${conditions[0].conditions_json.operator}`, "obj")
+    //     console.log(cond.conditions_json.value, "cond")
+        return `(${cond.conditions_json.key}${cond.conditions_json.operator}${cond.conditions_json.value})`;
+    }).join(' AND ');
+    // console.log(conditions_json)
+    // console.log(conditions[0].conditions_json, "conditions_json")
+
+    // console.log(conditions[0].conditions_json)   
+    // console.log(whereClauses,"whereclause")
+    // Final query with conditions
+    let finalQuery = `${cal} HAVING ${whereClauses}`;
+console.log(finalQuery,"final")
+return finalQuery
+//     let [rows]=await pool.query(finalQuery);
+// console.log(rows,"query")
+//     return {rows};
+    
+
+    // Build conditions dynamically
+    // const conditionClauses = conditions.map((condition, index) => {
+    //     const clause = `${condition.field} ${condition.operator} '${condition.unit}'`;
+    //     return index < conditions.length - 1 && condition.logical_operator
+    //         ? `${clause} ${condition.logical_operator}`
+    //         : clause;
+    // });
+
+    // cal += conditionClauses.join(' ');
+
+    // return cal;
+};
+
+

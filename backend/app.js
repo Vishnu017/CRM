@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import {getOut,get1,createNew,get2,getOrder,createNewOrder} from './database.js'
+import {getOut,get1,createNew,get2,getOrder,createNewOrder,buildSegmentQuery,pool} from './database.js'
 const app= express()
 
 app.use(cors());     //to accept api requests
@@ -61,13 +61,20 @@ app.use((err, req, res, next)=> {
 )
 
 
+app.get('/segment/:segmentName', async (req, res) => {
+    const { segmentName } = req.params;
 
-
-
-
-
-
-
+    try {
+        const x = await buildSegmentQuery(segmentName);
+        console.log(x);
+        const [results] = await pool.query(x);
+        console.log(results,"results")
+        res.json({ segmentName, results });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 
@@ -75,3 +82,4 @@ app.use((err, req, res, next)=> {
 app.listen(8080,() =>{
     console.log('Server is running on port 8080')
 })
+
