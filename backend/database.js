@@ -63,8 +63,7 @@ export async function createNewOrder(customer_id,product_name,amount,order_date)
     return get2(newOrd)
 }
 
-//conditions and segmenet creation
-
+//conditions and segment creation
 export async function buildSegmentQuery(segmentName){
     // Fetch conditions for the segment
     const [conditions] = await pool.query(
@@ -109,27 +108,29 @@ export async function buildSegmentQuery(segmentName){
     // console.log(conditions[0].conditions_json, "conditions_json")
 
     // console.log(conditions[0].conditions_json)   
-    // console.log(whereClauses,"whereclause")
+
     // Final query with conditions
     let finalQuery = `${cal} HAVING ${whereClauses}`;
 console.log(finalQuery,"final")
 return finalQuery
 //     let [rows]=await pool.query(finalQuery);
 // console.log(rows,"query")
-//     return {rows};
-    
-
-    // Build conditions dynamically
-    // const conditionClauses = conditions.map((condition, index) => {
-    //     const clause = `${condition.field} ${condition.operator} '${condition.unit}'`;
-    //     return index < conditions.length - 1 && condition.logical_operator
-    //         ? `${clause} ${condition.logical_operator}`
-    //         : clause;
-    // });
-
-    // cal += conditionClauses.join(' ');
-
-    // return cal;
+//     return {rows}; 
 };
 
+export async function camps(segment_id) {
+    const [rows]= await pool.query(`
+        SELECT *
+        FROM campaignTable
+        WHERE segment_id=?
+        `,[segment_id]
+    )
+    return rows
+}
+
+export async function getCamps() {       //get complete table
+    const [y]= await pool.query("SELECT * FROM campaignTable")
+    console.log(y)
+    return y;
+}
 

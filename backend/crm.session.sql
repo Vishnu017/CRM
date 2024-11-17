@@ -72,10 +72,10 @@ drop table visits
 
 -- This automatically resets AUTO_INCREMENT to 1
 SET  @num := 0;
-UPDATE customer SET id = @num := (@num+1);
-ALTER TABLE customer AUTO_INCREMENT =1;
+UPDATE campaignTable SET campaign_id= @num := (@num+1);
+ALTER TABLE campaignTable AUTO_INCREMENT =1;
 
-
+drop table audience_conditions
 -- create segments table
 CREATE TABLE audience_conditions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -89,5 +89,31 @@ INSERT INTO audience_conditions (segment_name, conditions_json) VALUES
 ('RareVisitors', '{"key":"total_visits", "operator": "<=", "value": 3}'),
 ('InactiveLast3Months', '{"key":"last_visit","operator": ">", "value": 3}');
 
+select * from audience_conditions
 delete from audience_conditions
 
+CREATE TABLE campaignTable(
+    campaign_id int AUTO_INCREMENT PRIMARY key,
+    segment_id int not null,
+    messages text,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (segment_id) REFERENCES audience_conditions(id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+select * from campaignTable
+drop table campaignTable
+INSERT into campaignTable(segment_id,messages) VALUES(
+    '1','Welcome message'
+)
+delete from campaignTable
+
+CREATE table communications_log(
+    com_id int AUTO_INCREMENT PRIMARY KEY,
+    customer_id int not null,
+    campaign_id int not null,
+    com_status text,
+    FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (campaign_id) REFERENCES campaignTable(campaign_id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+select * from communications_log
+INSERT into communications_log(customer_id,)
