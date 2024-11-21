@@ -15,7 +15,11 @@ app.use(express.json())
 // });
 
 //get all
-app.get("/", async (req,res) =>{
+app.get("/", async (req, res) => {
+    console.log( process.env.MYSQL_HOST,
+    process.env.MYSQL_USER,
+    process.env.MYSQL_PASSWORD,
+    process.env.MYSQL_DATABASE)
     const cust=await getOut()
     res.json(cust)
 })
