@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak_user;

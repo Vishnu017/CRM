@@ -41,5 +41,38 @@ services:
       "
     volumes:
       - ./crm.session.sql:/crm.session.sql
+  postgres:
+    image: postgres:latest
+    container_name: postgres_local
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak_user
+      POSTGRES_PASSWORD: keycloak_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database_init.sql:/docker-entrypoint-initdb.d/init.sql 
+      - postgres_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak_local
+    command:
+      - start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_PASSWORD: keycloak_password
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_HOST: postgres
+      KC_DB_USERNAME: keycloak_user
+      KC_DB_SCHEMA: public
+      KC_DB_URL_PORT: 5432
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
 volumes:
   my-db:
+  postgres_data:
