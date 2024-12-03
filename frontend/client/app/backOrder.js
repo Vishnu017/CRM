@@ -1,10 +1,14 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/orders';
 
 export const getOrder = async () => {
   try {
-    const response = await axios.get(BASE_URL);
+    const response = await axios.get("http://localhost:8081", {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching orders:', error);

@@ -1,21 +1,20 @@
 import express from 'express'
 import cors from 'cors'
 import {getOut,get1,createNew,get2,getOrder,getCamps,createNewOrder,buildSegmentQuery,pool,camps} from './database.js'
+import { checkRoles } from './middleware/validateRole.js';
+import { verifyToken } from './middleware/verifytoken.js';
 const app= express()
 
-app.use(cors());     //to accept api requests
+app.use(cors());
 
 app.use(express.json())
 
+app.use((req, res, next) => {
+    console.log("request Started")
+    next()
+})
 
-//to get json output on the page
-// app.get("/play", async(req,res)=>{
-//     console.log("byeee")
-//     res.json({message:"heellllooo"});
-// });
-
-//get all
-app.get("/", async (req, res) => {
+app.get("/", verifyToken, checkRoles(["offline_access"]), async (req, res) => {
     console.log( process.env.MYSQL_HOST,
     process.env.MYSQL_USER,
     process.env.MYSQL_PASSWORD,
@@ -23,7 +22,7 @@ app.get("/", async (req, res) => {
     const cust=await getOut()
     res.json(cust)
 })
-app.get("/orders", async (req,res) =>{
+app.get("/orders",checkRoles(["offline_access"]) , async (req,res) =>{
     const ord=await getOrder()
     res.json(ord)
 })
@@ -33,7 +32,6 @@ app.get("/campaigns", async (req,res) =>{
 })
 
 
-//get by id 
 app.get("/:id", async (req,res) =>{
     const id=req.params.id
     const byId=await get1(id)
@@ -136,8 +134,22 @@ app.post("/comm",async(req,res)=>{
         });
 })
 
-
-app.listen(8080,() =>{
-    console.log('Server is running on port 8080')
+app.use((req, res, next) => {
+    console.log("response send back")
+    next()
 })
+
+app.use(errorHandler)
+
+app.listen(8081,() =>{
+    console.log('Server is running on port 8081')
+})
+
+
+function errorHandler(err, req, res, next) {
+  console.error('Error:', err); // Log error details
+  const statusCode = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+  res.status(statusCode).json({ success: false, error: message });
+}
 
